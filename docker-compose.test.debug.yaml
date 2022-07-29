@@ -3,4 +3,4 @@ services:
   ffc-pay-statement-data:
     command: npm run test:debug
     ports:
-      - "9229:9229"
+      - "9252:9229"
