@@ -9,8 +9,16 @@ services:
     image: ffc-pay-statement-data-development
     container_name: ffc-pay-statement-data-development
     ports:
-      - "3000:3000"
-      - "9229:9229"
+      - "9252:9229"
     volumes:
       - ./app:/home/node/app
       - ./package.json:/home/node/package.json
+
+  ffc-pay-statement-data-postgres:
+    ports:
+      - "5452:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

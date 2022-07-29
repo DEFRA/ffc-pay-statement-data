@@ -6,6 +6,25 @@ services:
       target: production
     image: ffc-pay-statement-data
     container_name: ffc-pay-statement-data
+    depends_on:
+      - ffc-pay-statement-data-postgres
     environment:
       APPINSIGHTS_CLOUDROLE: ffc-pay-statement-data-local
       APPINSIGHTS_INSTRUMENTATIONKEY: ${APPINSIGHTS_INSTRUMENTATIONKEY}
+      MESSAGE_QUEUE_HOST: ${MESSAGE_QUEUE_HOST}
+      MESSAGE_QUEUE_PASSWORD: ${MESSAGE_QUEUE_PASSWORD}
+      MESSAGE_QUEUE_USER: ${MESSAGE_QUEUE_USER}
+      DATA_TOPIC_ADDRESS: ${STATEMENT_TOPIC_ADDRESS:-ffc-pay-statement-data}${MESSAGE_QUEUE_SUFFIX}      
+      POSTGRES_DB: ffc_pay_statement_data
+      POSTGRES_HOST: ${POSTGRES_HOST:-ffc-pay-statement-data-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_SCHEMA_PASSWORD:-ppp}
+      POSTGRES_PORT: 5432
+      POSTGRES_SCHEMA_NAME: ${POSTGRES_SCHEMA_NAME:-public}
+      POSTGRES_USERNAME: ${POSTGRES_SCHEMA_USERNAME:-postgres}
+
+  ffc-pay-statement-data-postgres:
+    image: postgres:11.4-alpine
+    environment:
+      POSTGRES_DB: ffc_pay_statement_data
+      POSTGRES_PASSWORD: ppp
+      POSTGRES_USERNAME: postgres
