@@ -1,8 +1,8 @@
 environment: development
-name: ffc-template-node
-namespace: ffc-demo
-workstream: ffc-demo
-image: ffc-template-node
+name: ffc-pay-statement-data
+namespace: ffc-pay
+workstream: ffc-pay
+image: ffc-pay-statement-data
 
 labels: {}
 
@@ -10,10 +10,10 @@ appInsights:
   key:
 
 containerConfigMap:
-  name: ffc-template-node-config-map
+  name: ffc-pay-statement-data-config-map
 
 containerSecret:
-  name: ffc-template-node-container-secret
+  name: ffc-pay-statement-data-container-secret
   type: Opaque
 
 deployment:
