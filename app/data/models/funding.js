@@ -12,10 +12,10 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false
   })
   funding.associate = function (models) {
-    funding.belongsTo(models.claim, {
+    funding.belongsTo(models.calculation, {
       foreignKey: 'calculationId',
-      as: 'claim'
+      as: 'calculations'
     })
-    return funding
   }
+  return funding
 }

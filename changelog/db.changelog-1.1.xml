@@ -23,7 +23,7 @@
   <changeSet author="John Watson" id="3">
     <createTable tableName="calculations">
       <column name="calculationId" type="INTEGER">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="calculationId_pkey" />
+        <constraints nullable="false" primaryKey="true" primaryKeyName="calculationsId_pkey" />
       </column>
       <column name="sbi" type="INTEGER" />
       <column name="frn" type="BIGINT" />
@@ -41,11 +41,11 @@
       <column name="fundingCode" type="VARCHAR(10)" />
       <column name="calculationId" type="INTEGER" />
       <column name="areaClaimed" type="DECIMAL(19,4)" />
-      <column name="rate" type="DECIMAL(18,6)" />
+      <column name="rate" type="DECIMAL(11,6)" />
     </createTable>
   </changeSet>
   <changeSet author="John Watson" id="5">
-    <addForeignKeyConstraint baseColumnNames="calculationId" baseTableName="fundings" constraintName="fk_calculation_calculationId" referencedColumnNames="calculationId" referencedTableName="calculations" />
+    <addForeignKeyConstraint baseColumnNames="calculationId" baseTableName="fundings" constraintName="fk_calculations_calculationId" referencedColumnNames="calculationId" referencedTableName="calculations" />
     <addForeignKeyConstraint baseColumnNames="sbi" baseTableName="calculations" constraintName="fk_organisations_sbi" referencedColumnNames="sbi" referencedTableName="organisations" />
   </changeSet>
 </databaseChangeLog>

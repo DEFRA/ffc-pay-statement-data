@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  const claim = sequelize.define('calculation', {
+  const calculation = sequelize.define('calculation', {
     calculationId: { type: DataTypes.INTEGER, primaryKey: true },
     sbi: DataTypes.INTEGER,
     frn: DataTypes.BIGINT,
@@ -13,15 +13,15 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: true,
     timestamps: false
   })
-  claim.associate = function (models) {
-    claim.hasMany(models.funding, {
+  calculation.associate = function (models) {
+    calculation.hasMany(models.funding, {
       foreignKey: 'calculationId',
       as: 'funding'
     })
-    claim.belongsTo(models.organisation, {
+    calculation.belongsTo(models.organisation, {
       foreignKey: 'sbi',
       as: 'organisations'
     })
-    return claim
   }
+  return calculation
 }
