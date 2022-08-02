@@ -13,7 +13,7 @@
       <column name="addressLine3" type="VARCHAR(127)" />
       <column name="city" type="VARCHAR(127)" />
       <column name="county" type="VARCHAR(127)" />
-      <column name="postCode" type="VARCHAR(8)" />
+      <column name="postcode" type="VARCHAR(8)" />
       <column name="emailAddress" type="VARCHAR(127)" />
       <column name="frn" type="BIGINT" />
       <column name="name" type="VARCHAR(127)" />
