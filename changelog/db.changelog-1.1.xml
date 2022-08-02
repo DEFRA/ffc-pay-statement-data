@@ -3,4 +3,49 @@
   <changeSet author="John Watson" id="1">
     <tagDatabase tag="v1.1.0" />
   </changeSet>
+  <changeSet author="John Watson" id="2">
+    <createTable tableName="organisations">
+      <column name="sbi" type="INTEGER">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="organisationsId_pkey" />
+      </column>
+      <column name="addressLine1" type="VARCHAR(127)" />
+      <column name="addressLine2" type="VARCHAR(127)" />
+      <column name="addressLine3" type="VARCHAR(127)" />
+      <column name="city" type="VARCHAR(127)" />
+      <column name="county" type="VARCHAR(127)" />
+      <column name="postCode" type="VARCHAR(8)" />
+      <column name="emailAddress" type="VARCHAR(127)" />
+      <column name="frn" type="BIGINT" />
+      <column name="name" type="VARCHAR(127)" />
+      <column name="updated" type="TIMESTAMP" />
+    </createTable>
+  </changeSet>
+  <changeSet author="John Watson" id="3">
+    <createTable tableName="calculations">
+      <column name="calculationId" type="INTEGER">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="calculationId_pkey" />
+      </column>
+      <column name="sbi" type="INTEGER" />
+      <column name="frn" type="BIGINT" />
+      <column name="calculationDate" type="TIMESTAMP" />
+      <column name="invoiceNumber" type="VARCHAR(30)" />
+      <column name="scheme" type="VARCHAR(20)" />
+      <column name="updated" type="TIMESTAMP" />
+    </createTable>
+  </changeSet>
+  <changeSet author="John Watson" id="4">
+    <createTable tableName="fundings">
+      <column name="fundingId" type="INTEGER" autoIncrement="true" >
+        <constraints nullable="false" primaryKey="true" primaryKeyName="fundingsId_pkey" />
+      </column>
+      <column name="fundingCode" type="VARCHAR(10)" />
+      <column name="calculationId" type="INTEGER" />
+      <column name="areaClaimed" type="DECIMAL(19,4)" />
+      <column name="rate" type="DECIMAL(18,6)" />
+    </createTable>
+  </changeSet>
+  <changeSet author="John Watson" id="5">
+    <addForeignKeyConstraint baseColumnNames="calculationId" baseTableName="fundings" constraintName="fk_calculation_calculationId" referencedColumnNames="calculationId" referencedTableName="calculations" />
+    <addForeignKeyConstraint baseColumnNames="sbi" baseTableName="calculations" constraintName="fk_organisations_sbi" referencedColumnNames="sbi" referencedTableName="organisations" />
+  </changeSet>
 </databaseChangeLog>

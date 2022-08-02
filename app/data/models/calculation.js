@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  const claim = sequelize.define('claim', {
+  const claim = sequelize.define('calculation', {
     calculationId: { type: DataTypes.INTEGER, primaryKey: true },
     sbi: DataTypes.INTEGER,
     frn: DataTypes.BIGINT,
@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     updated: DataTypes.DATE
   },
   {
-    tableName: 'claims',
+    tableName: 'calculations',
     freezeTableName: true,
     timestamps: false
   })
