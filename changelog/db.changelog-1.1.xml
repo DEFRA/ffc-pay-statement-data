@@ -40,7 +40,7 @@
       </column>
       <column name="fundingCode" type="VARCHAR(10)" />
       <column name="calculationId" type="INTEGER" />
-      <column name="areaClaimed" type="DECIMAL(19,4)" />
+      <column name="areaClaimed" type="DECIMAL(11,4)" />
       <column name="rate" type="DECIMAL(11,6)" />
     </createTable>
   </changeSet>
