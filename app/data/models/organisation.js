@@ -10,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
     emailAddress: DataTypes.STRING,
     frn: DataTypes.BIGINT,
     name: DataTypes.STRING,
-    updated: DataTypes.DATE
+    updated: DataTypes.DATE,
+    published: DataTypes.DATE
   },
   {
     tableName: 'organisations',

@@ -29,7 +29,7 @@ const value = result.value
 value.isDev = value.env === 'development'
 value.isTest = value.env === 'test'
 value.isProd = value.env === 'production'
-value.statementSubscription = mqConfig.statementSubscription
+value.dataTopic = mqConfig.dataTopic
 value.dbConfig = dbConfig
 
 module.exports = value
