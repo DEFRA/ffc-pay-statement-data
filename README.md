@@ -61,6 +61,13 @@ Use Docker Compose to run service locally.
 ./scripts/start
 ```
 
+The application is intended to run a scheduled cron job.  Therefore the process will exit once complete.  
+A script is provided to execute the process within an already running Docker container.
+
+```
+./scripts/execute
+```
+
 ## Test structure
 
 The tests have been structured into subfolders of `./test` as per the
