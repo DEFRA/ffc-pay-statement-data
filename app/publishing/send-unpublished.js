@@ -10,7 +10,7 @@ const sendUnpublished = async (type) => {
     const outstanding = await getUnpublished(transaction)
     for (const unpublished of outstanding) {
       await sendMessage(unpublished, type)
-      const primaryKey = getPrimaryKey(unpublished, db[type].primaryKeyAttributes[0])
+      const primaryKey = getPrimaryKey(unpublished, type)
       await updatePublished(primaryKey, transaction)
     }
     await transaction.commit()
