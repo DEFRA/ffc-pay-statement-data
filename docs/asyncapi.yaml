@@ -116,12 +116,16 @@ components:
       description: The postcode
       example: AB1 2CD
     Updated:
-      type: dateTime
+      type: string
       format: date-time
       description: The date the dataset received from Data Warehouse
       example: 2022-08-22T16:45:20.891Z
+    CalculationId:
+      type: number
+      description: Calculation reference Id
+      example: 1234567
     CalculationDate:
-      type: dateTime
+      type: string
       format: date-time
       description: The date the calculation was performed
       example: 2022-08-22T16:45:20.891Z
