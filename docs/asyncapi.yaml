@@ -119,12 +119,12 @@ components:
       type: dateTime
       format: date-time
       description: The date the dataset received from Data Warehouse
-      example: 01/12/2022 09:00:00
+      example: 2022-08-22T16:45:20.891Z
     CalculationDate:
       type: dateTime
       format: date-time
       description: The date the calculation was performed
-      example: 01/12/2022 09:00:00
+      example: 2022-08-22T16:45:20.891Z
     InvoiceNumber:
       type: string
       description: Invoice number of payment request

@@ -12,7 +12,6 @@ const sendUnpublished = async (type) => {
       await sendMessage(unpublished, type.name)
       const primaryKey = getPrimaryKey(unpublished, type.primaryKey)
       await updatePublished(primaryKey, transaction)
-      console.log(`Sent ${type} data`, unpublished)
     }
     await transaction.commit()
   } catch (err) {
