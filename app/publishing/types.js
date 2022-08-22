@@ -1,4 +1,10 @@
 module.exports = {
-  ORGANISATION: 'organisation',
-  CALCULATION: 'calculation'
+  organisation: {
+    name: 'organisation',
+    primaryKey: 'sbi'
+  },
+  calculation: {
+    name: 'calculation',
+    primaryKey: 'calculationId'
+  }
 }

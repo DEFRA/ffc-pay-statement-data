@@ -1,9 +1,11 @@
 const sendUnpublished = require('./send-unpublished')
-const { ORGANISATION, CALCULATION } = require('./types')
+const { organisation, calculation } = require('./types')
 
 const publish = async () => {
-  await sendUnpublished(ORGANISATION)
-  await sendUnpublished(CALCULATION)
+  await Promise.all([
+    sendUnpublished(organisation),
+    sendUnpublished(calculation)
+  ])
 }
 
 module.exports = publish
