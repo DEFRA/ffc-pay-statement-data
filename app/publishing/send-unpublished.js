@@ -1,5 +1,5 @@
 const db = require('../data')
-const getPrimaryKey = require('./get-primary-key')
+const getPrimaryKeyValue = require('./get-primary-key-value')
 const sendMessage = require('./send-message')
 
 const sendUnpublished = async (type) => {
@@ -10,7 +10,7 @@ const sendUnpublished = async (type) => {
     const outstanding = await getUnpublished(transaction)
     for (const unpublished of outstanding) {
       await sendMessage(unpublished, type)
-      const primaryKey = getPrimaryKey(unpublished, type)
+      const primaryKey = getPrimaryKeyValue(unpublished, type)
       await updatePublished(primaryKey, transaction)
     }
     await transaction.commit()

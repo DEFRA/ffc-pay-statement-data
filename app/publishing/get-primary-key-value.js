@@ -1,7 +1,7 @@
 const db = require('../data')
 
-const getPrimaryKey = (object, type) => {
+const getPrimaryKeyValue = (object, type) => {
   return object[db[type].primaryKeyAttributes[0]]
 }
 
-module.exports = getPrimaryKey
+module.exports = getPrimaryKeyValue
