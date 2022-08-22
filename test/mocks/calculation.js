@@ -15,7 +15,8 @@ const mockCalculation2 = {
   calculationDate: new Date(2022, 7, 5, 15, 30, 10, 120),
   invoiceNumber: 'SFI1234568',
   scheme: 'SFI',
-  updated: new Date(2022, 7, 5, 15, 30, 10, 120)
+  updated: new Date(2022, 7, 5, 15, 30, 10, 120),
+  published: new Date(2022, 7, 5, 15, 30, 10, 120)
 }
 
 module.exports = {
