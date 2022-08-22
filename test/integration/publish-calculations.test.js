@@ -10,10 +10,10 @@ jest.mock('ffc-messaging', () => {
     })
   }
 })
-const db = require('../../../app/data')
-const publish = require('../../../app/publishing')
-const { mockCalculation1, mockCalculation2 } = require('../../mocks/calculation')
-const { mockFunding1, mockFunding2, mockFunding3 } = require('../../mocks/funding')
+const db = require('../../app/data')
+const publish = require('../../app/publishing')
+const { mockCalculation1, mockCalculation2 } = require('../mocks/calculation')
+const { mockFunding1, mockFunding2, mockFunding3 } = require('../mocks/funding')
 
 describe('publish calculations', () => {
   beforeEach(async () => {
