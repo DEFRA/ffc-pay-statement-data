@@ -22,7 +22,7 @@ describe('publish calculations', () => {
 
     await db.sequelize.truncate({ cascade: true })
     await db.calculation.bulkCreate([mockCalculation1, mockCalculation2])
-    await db.funding.bulkCreate([mockFunding1, mockFunding2, mockFunding3])
+    await db.funding.bulkCreate([mockFunding1, mockFunding2])
   })
 
   afterAll(async () => {
@@ -65,6 +65,36 @@ describe('publish calculations', () => {
     expect(mockSendMessage.mock.calls[0][0].body.updated).toBe(mockCalculation1.updated.toISOString())
   })
 
+  test('should publish unpublished funding', async () => {
+    await publish()
+    expect(mockSendMessage.mock.calls[0][0].body.fundings.length).toBe(1)
+  })
+
+  test('should publish unpublished funding rate', async () => {
+    await publish()
+    expect(mockSendMessage.mock.calls[0][0].body.fundings[0].rate).toBe(mockFunding1.rate.toFixed(6))
+  })
+
+  test('should publish unpublished funding code', async () => {
+    await publish()
+    expect(mockSendMessage.mock.calls[0][0].body.fundings[0].fundingCode).toBe(mockFunding1.fundingCode)
+  })
+
+  test('should publish unpublished funding area claimed', async () => {
+    await publish()
+    expect(mockSendMessage.mock.calls[0][0].body.fundings[0].areaClaimed).toBe(mockFunding1.areaClaimed.toFixed(4))
+  })
+
+  test('should publish unpublished funding calculation Id', async () => {
+    await publish()
+    expect(mockSendMessage.mock.calls[0][0].body.fundings[0].calculationId).toBe(mockFunding1.calculationId)
+  })
+
+  test('should not publish unpublished funding primary key', async () => {
+    await publish()
+    expect(mockSendMessage.mock.calls[0][0].body.fundings[0].fundingId).toBeUndefined()
+  })
+
   test('should not publish null published value', async () => {
     await publish()
     expect(mockSendMessage.mock.calls[0][0].body.published).toBeUndefined()
@@ -80,5 +110,11 @@ describe('publish calculations', () => {
     await publish()
     await publish()
     expect(mockSendMessage).toHaveBeenCalledTimes(1)
+  })
+
+  test('should publish all funding options if multiple', async () => {
+    await db.funding.create(mockFunding3)
+    await publish()
+    expect(mockSendMessage.mock.calls[0][0].body.fundings.length).toBe(2)
   })
 })
