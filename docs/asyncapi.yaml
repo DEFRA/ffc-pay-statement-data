@@ -53,12 +53,10 @@ components:
     Calculation:
       type: object
       properties:
-        calculationId:
-          $ref: '#/components/schemas/CalculationId'
+        calculationReference:
+          $ref: '#/components/schemas/CalculationReference'
         sbi:
           $ref: '#/components/schemas/SBI'
-        frn:
-          $ref: '#/components/schemas/FRN'
         calculationDate:
           $ref: '#/components/schemas/CalculationDate'
         invoiceNumber:
@@ -120,7 +118,7 @@ components:
       format: date-time
       description: The date the dataset received from Data Warehouse
       example: 2022-08-22T16:45:20.891Z
-    CalculationId:
+    CalculationReference:
       type: number
       description: Calculation reference Id
       example: 1234567
