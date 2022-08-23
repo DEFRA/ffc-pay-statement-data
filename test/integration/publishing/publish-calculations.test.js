@@ -35,14 +35,19 @@ describe('publish calculations', () => {
     expect(mockSendMessage).toHaveBeenCalledTimes(1)
   })
 
+  test('should publish unpublished calculation reference', async () => {
+    await publish()
+    expect(mockSendMessage.mock.calls[0][0].body.calculationReference).toBe(mockCalculation1.calculationId)
+  })
+
   test('should publish unpublished calculation sbi', async () => {
     await publish()
     expect(mockSendMessage.mock.calls[0][0].body.sbi).toBe(mockCalculation1.sbi)
   })
 
-  test('should publish unpublished calculation frn', async () => {
+  test('should not publish unpublished calculation frn', async () => {
     await publish()
-    expect(mockSendMessage.mock.calls[0][0].body.frn).toBe(mockCalculation1.frn.toString())
+    expect(mockSendMessage.mock.calls[0][0].body.frn).toBeUndefined()
   })
 
   test('should publish unpublished invoice number', async () => {
