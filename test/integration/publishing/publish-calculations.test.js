@@ -90,11 +90,6 @@ describe('publish calculations', () => {
     expect(mockSendMessage.mock.calls[0][0].body.fundings[0].areaClaimed).toBe(mockFunding1.areaClaimed.toFixed(4))
   })
 
-  test('should publish unpublished funding calculation Id', async () => {
-    await publish()
-    expect(mockSendMessage.mock.calls[0][0].body.fundings[0].calculationId).toBe(mockFunding1.calculationId)
-  })
-
   test('should not publish unpublished funding primary key', async () => {
     await publish()
     expect(mockSendMessage.mock.calls[0][0].body.fundings[0].fundingId).toBeUndefined()
