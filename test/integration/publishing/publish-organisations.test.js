@@ -88,6 +88,11 @@ describe('publish organisations', () => {
     expect(mockSendMessage.mock.calls[0][0].body.updated).toBe(mockOrganisation1.updated.toISOString())
   })
 
+  test('should publish unpublished type', async () => {
+    await publish()
+    expect(mockSendMessage.mock.calls[0][0].body.type).toBe('organisation')
+  })
+
   test('should not publish null published value', async () => {
     await publish()
     expect(mockSendMessage.mock.calls[0][0].body.published).toBeUndefined()
