@@ -95,6 +95,11 @@ describe('publish calculations', () => {
     expect(mockSendMessage.mock.calls[0][0].body.fundings[0].fundingId).toBeUndefined()
   })
 
+  test('should publish unpublished type', async () => {
+    await publish()
+    expect(mockSendMessage.mock.calls[0][0].body.type).toBe('calculation')
+  })
+
   test('should not publish null published value', async () => {
     await publish()
     expect(mockSendMessage.mock.calls[0][0].body.published).toBeUndefined()

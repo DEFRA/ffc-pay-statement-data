@@ -50,6 +50,8 @@ components:
           $ref: '#/components/schemas/Email'
         updated:
           $ref: '#/components/schemas/Updated'
+        type:
+          $ref: '#/components/schemas/Type'
     Calculation:
       type: object
       properties:
@@ -69,6 +71,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Funding'
+        type:
+          $ref: '#/components/schemas/Type'
     BusinessName:
       type: string
       description: The business name
@@ -158,3 +162,10 @@ components:
       format: decimal
       description: Payment in pounds sterling per hectare
       example: 22.50
+    Type:
+      type: string
+      description: Type of dataset
+      example: organisation
+      enum:
+      - calculation
+      - organisation
