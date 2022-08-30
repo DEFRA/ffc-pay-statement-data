@@ -5,9 +5,9 @@ const body = {
 const type = 'message'
 
 describe('create message', () => {
-  test('includes type in body', () => {
+  test('includes body', () => {
     const result = createMessage(body, type)
-    expect(result.body).toStrictEqual({ ...body, type })
+    expect(result.body).toStrictEqual(body)
   })
 
   test('includes type', () => {

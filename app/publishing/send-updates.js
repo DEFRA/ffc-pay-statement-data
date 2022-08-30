@@ -12,6 +12,7 @@ const sendUpdates = async (type) => {
     const outstanding = await getUnpublished(transaction)
     for (const unpublished of outstanding) {
       const sanitizedUpdate = removeDefunctValues(unpublished)
+      sanitizedUpdate.type = type
       const isValid = validateUpdate(sanitizedUpdate, type)
       if (isValid) {
         await sendMessage(sanitizedUpdate, type)
