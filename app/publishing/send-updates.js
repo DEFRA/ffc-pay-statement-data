@@ -12,10 +12,12 @@ const sendUpdates = async (type) => {
     const outstanding = await getUnpublished(transaction)
     for (const unpublished of outstanding) {
       const sanitizedUpdate = removeDefunctValues(unpublished)
-      validateUpdate(sanitizedUpdate, type)
-      await sendMessage(sanitizedUpdate, type)
-      const primaryKey = getPrimaryKeyValue(unpublished, type)
-      await updatePublished(primaryKey, transaction)
+      const isValid = validateUpdate(sanitizedUpdate, type)
+      if (isValid) {
+        await sendMessage(sanitizedUpdate, type)
+        const primaryKey = getPrimaryKeyValue(unpublished, type)
+        await updatePublished(primaryKey, transaction)
+      }
     }
     await transaction.commit()
   } catch (err) {
