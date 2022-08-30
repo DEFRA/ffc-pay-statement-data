@@ -12,7 +12,7 @@ module.exports = Joi.object({
     fundingCode: Joi.string().required(),
     areaClaimed: Joi.number().required(),
     rate: Joi.number().required()
-  })),
+  })).required(),
   updated: Joi.date().required(),
-  type: Joi.string().allow(CALCULATION)
+  type: Joi.string().required().allow(CALCULATION)
 })

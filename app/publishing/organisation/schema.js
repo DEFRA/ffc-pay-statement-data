@@ -11,7 +11,7 @@ module.exports = Joi.object({
   city: Joi.string().optional(),
   county: Joi.string().optional(),
   postcode: Joi.string().required(),
-  emailAddress: Joi.string().email().optional(),
+  emailAddress: Joi.string().email().required(),
   updated: Joi.date().required(),
-  type: Joi.string().allow(ORGANISATION)
+  type: Joi.string().required().allow(ORGANISATION)
 })
