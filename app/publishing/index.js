@@ -1,10 +1,10 @@
-const sendUnpublished = require('./send-unpublished')
+const sendUpdates = require('./send-updates')
 const { ORGANISATION, CALCULATION } = require('./types')
 
 const publish = async () => {
   await Promise.all([
-    sendUnpublished(ORGANISATION),
-    sendUnpublished(CALCULATION)
+    sendUpdates(ORGANISATION),
+    sendUpdates(CALCULATION)
   ])
 }
 

@@ -47,7 +47,7 @@ describe('publish calculations', () => {
 
   test('should publish unpublished calculation frn', async () => {
     await publish()
-    expect(mockSendMessage.mock.calls[0][0].body.frn).toBe(mockCalculation1.frn)
+    expect(mockSendMessage.mock.calls[0][0].body.frn).toBe(mockCalculation1.frn.toString())
   })
 
   test('should publish unpublished invoice number', async () => {
