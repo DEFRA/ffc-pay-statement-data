@@ -45,9 +45,9 @@ describe('publish calculations', () => {
     expect(mockSendMessage.mock.calls[0][0].body.sbi).toBe(mockCalculation1.sbi)
   })
 
-  test('should not publish unpublished calculation frn', async () => {
+  test('should publish unpublished calculation frn', async () => {
     await publish()
-    expect(mockSendMessage.mock.calls[0][0].body.frn).toBeUndefined()
+    expect(mockSendMessage.mock.calls[0][0].body.frn).toBe(mockCalculation1.frn)
   })
 
   test('should publish unpublished invoice number', async () => {

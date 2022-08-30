@@ -59,6 +59,8 @@ components:
           $ref: '#/components/schemas/CalculationReference'
         sbi:
           $ref: '#/components/schemas/SBI'
+        frn:
+          $ref: '#/components/schemas/FRN'
         calculationDate:
           $ref: '#/components/schemas/CalculationDate'
         invoiceNumber:
