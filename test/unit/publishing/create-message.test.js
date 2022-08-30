@@ -17,6 +17,6 @@ describe('create message', () => {
 
   test('includes source', () => {
     const result = createMessage(body, type)
-    expect(result.type).toBe('uk.gov.pay.statement.data.message')
+    expect(result.source).toBe('ffc-pay-statement-data')
   })
 })
