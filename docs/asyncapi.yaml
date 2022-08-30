@@ -123,7 +123,7 @@ components:
       type: string
       format: date-time
       description: The date the dataset received from Data Warehouse
-      example: 2022-08-22T16:45:20.891Z
+      example: "2022-08-22T16:45:20.891Z"
     CalculationReference:
       type: number
       description: Calculation reference Id
@@ -132,7 +132,7 @@ components:
       type: string
       format: date-time
       description: The date the calculation was performed
-      example: 2022-08-22T16:45:20.891Z
+      example: "2022-08-22T16:45:20.891Z"
     InvoiceNumber:
       type: string
       description: Invoice number of payment request
