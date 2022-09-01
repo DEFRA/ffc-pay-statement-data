@@ -5,5 +5,5 @@ const publish = require('./publishing')
 module.exports = (async () => {
   console.log('Ready to publish data')
   await publish()
-  console.log('All outstanding datasets published')
+  console.log('All outstanding valid datasets published')
 })()
