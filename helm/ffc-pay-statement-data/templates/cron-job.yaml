@@ -1,0 +1,11 @@
+{{- include "ffc-helm-library.cron-job" (list . "ffc-pay-statement-data.cron-job") -}}
+{{- define "ffc-pay-statement-data.cron-job" -}}
+spec:
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - {{ include "ffc-helm-library.container" (list . "ffc-pay-statement-data.container") | nindent 12 }}
+{{- end -}}

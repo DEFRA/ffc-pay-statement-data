@@ -21,10 +21,6 @@ deployment:
   restartPolicy: Always
   priorityClassName: default
   replicas: 1
-  minReplicas: 1
-  maxReplicas: 1
-  cpuThreshold: 80
-  memoryThreshold: 80
   minReadySeconds: 0
 
 container:
@@ -48,3 +44,9 @@ aadPodIdentity: true
 azureIdentity:
   clientID: not-a-real-clientID
   resourceID: not-a-real-resourceID
+
+cronJob:
+  schedule: "*/10 * * * *"
+  resultsAllSchedule: "0 0 1 * *"
+  concurrencyPolicy: Forbid
+  restartPolicy: Never

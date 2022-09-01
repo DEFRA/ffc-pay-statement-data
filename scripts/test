@@ -51,7 +51,10 @@ compose() {
 (
   cd "${projectRoot}"
 
- # Guarantee clean environment
+  # create test output folder
+  mkdir -p test-output
+
+  # Guarantee clean environment
   compose down -v
   docker-compose -f docker-compose.migrate.yaml -p "${service}-test" down -v
 

@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
     calculationDate: DataTypes.DATE,
     invoiceNumber: DataTypes.STRING,
     scheme: DataTypes.STRING,
-    updated: DataTypes.DATE
+    updated: DataTypes.DATE,
+    published: DataTypes.DATE
   },
   {
     tableName: 'calculations',
@@ -16,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   calculation.associate = function (models) {
     calculation.hasMany(models.funding, {
       foreignKey: 'calculationId',
-      as: 'funding'
+      as: 'fundings'
     })
     calculation.belongsTo(models.organisation, {
       foreignKey: 'sbi',

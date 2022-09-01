@@ -1,0 +1,173 @@
+asyncapi: 2.4.0
+info:
+  title: FFC Payment Statement Data
+  version: '1.0.0'
+  description: Publish datasets from Data Warehouse for Payment Statements
+channels:
+  organisation:
+    publish:
+      message:
+        $ref: '#/components/messages/Organisation'
+  calculation:
+    publish:
+      message:
+        $ref: '#/components/messages/Calculation'
+components:
+  messages:
+    Organisation:
+      name: Organisation
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/Organisation'
+    Calculation:
+      name: Calculation
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/Calculation'
+  schemas:
+    Organisation:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/BusinessName'
+        sbi:
+          $ref: '#/components/schemas/SBI'
+        frn:
+          $ref: '#/components/schemas/FRN'
+        addressLine1:
+          $ref: '#/components/schemas/AddressLine1'
+        addressLine2:
+          $ref: '#/components/schemas/AddressLine2'
+        addressLine3:
+          $ref: '#/components/schemas/AddressLine3'
+        city:
+          $ref: '#/components/schemas/City'
+        county:
+          $ref: '#/components/schemas/County'
+        postcode:
+          $ref: '#/components/schemas/Postcode'
+        emailAddress:
+          $ref: '#/components/schemas/Email'
+        updated:
+          $ref: '#/components/schemas/Updated'
+        type:
+          $ref: '#/components/schemas/Type'
+    Calculation:
+      type: object
+      properties:
+        calculationReference:
+          $ref: '#/components/schemas/CalculationReference'
+        sbi:
+          $ref: '#/components/schemas/SBI'
+        frn:
+          $ref: '#/components/schemas/FRN'
+        calculationDate:
+          $ref: '#/components/schemas/CalculationDate'
+        invoiceNumber:
+          $ref: '#/components/schemas/InvoiceNumber'
+        scheme:
+          $ref: '#/components/schemas/Scheme'
+        updated:
+          $ref: '#/components/schemas/Updated'
+        fundings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Funding'
+        type:
+          $ref: '#/components/schemas/Type'
+    BusinessName:
+      type: string
+      description: The business name
+      example: 'FFC Ltd'
+    SBI:
+      type: number
+      description: Single Business Identifier
+      minimum: 105000000
+      maximum: 999999999
+      example: 123456789
+    FRN:
+      type: number
+      description: Firm Reference Number
+      minimum: 1000000000
+      maximum: 9999999999
+      example: 1234567890
+    Email:
+      type: string
+      description: The business email address
+      example: farm@farms.com
+    AddressLine1:
+      type: string
+      description: The first line of the address
+      example: 1 The Street
+    AddressLine2:
+      type: string
+      description: The second line of the address
+      example: The Area
+    AddressLine3:
+      type: string
+      description: The third line of the address
+      example: The Town
+    City:
+      type: string
+      description: The fourth line of the address
+      example: The Region
+    County:
+      type: string
+      description: The fifth line of the address
+      example: The County
+    Postcode:
+      type: string
+      description: The postcode
+      example: AB1 2CD
+    Updated:
+      type: string
+      format: date-time
+      description: The date the dataset received from Data Warehouse
+      example: "2022-08-22T16:45:20.891Z"
+    CalculationReference:
+      type: number
+      description: Calculation reference Id
+      example: 1234567
+    CalculationDate:
+      type: string
+      format: date-time
+      description: The date the calculation was performed
+      example: "2022-08-22T16:45:20.891Z"
+    InvoiceNumber:
+      type: string
+      description: Invoice number of payment request
+      example: S0000001C000001V001
+    Scheme:
+      type: string
+      description: The scheme of the calculation belongs to
+      example: SFI
+    Funding:
+      type: object
+      properties:
+        fundingCode:
+          $ref: '#/components/schemas/FundingCode'
+        areaClaimed:
+          $ref: '#/components/schemas/AreaClaimed'
+        rate:
+          $ref: '#/components/schemas/Rate'
+    FundingCode:
+      type: string
+      description: Identifier for funding code within scheme
+      example: 80001
+    AreaClaimed:
+      type: number
+      format: decimal
+      description: The area claimed for the calculation in hectares
+      example: 100.50
+    Rate:
+      type: number
+      format: decimal
+      description: Payment in pounds sterling per hectare
+      example: 22.50
+    Type:
+      type: string
+      description: Type of dataset
+      example: organisation
+      enum:
+      - calculation
+      - organisation
