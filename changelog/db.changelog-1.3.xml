@@ -7,5 +7,7 @@
     <dropForeignKeyConstraint  baseTableName="fundings" constraintName="fk_calculations_calculationId"/>
     <dropPrimaryKey tableName="calculations" dropIndex="true" constraintName="calculationsId_pkey"/>
     <addPrimaryKey tableName="calculations" columnNames="calculationId, scheme" constraintName="calculationsId_scheme_pkey"/>
+    <addForeignKeyConstraint baseColumnNames="calculationId, fundingCode" baseTableName="fundings" constraintName="fk_calculations_calculationId_scheme" referencedColumnNames="calculationId, scheme" referencedTableName="calculations" />
   </changeSet>
+
 </databaseChangeLog>
