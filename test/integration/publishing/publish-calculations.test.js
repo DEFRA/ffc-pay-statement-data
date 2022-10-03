@@ -12,7 +12,7 @@ jest.mock('ffc-messaging', () => {
 })
 const db = require('../../../app/data')
 const publish = require('../../../app/publishing')
-const { mockCalculation1, mockCalculation2 } = require('../../mocks/calculation')
+const { mockCalculation1, mockCalculation2, mockCalculation3 } = require('../../mocks/calculation')
 const { mockFunding1, mockFunding2, mockFunding3 } = require('../../mocks/funding')
 
 describe('publish calculations', () => {
@@ -21,7 +21,7 @@ describe('publish calculations', () => {
     jest.useFakeTimers().setSystemTime(new Date(2022, 7, 5, 15, 30, 10, 120))
 
     await db.sequelize.truncate({ cascade: true })
-    await db.calculation.bulkCreate([mockCalculation1, mockCalculation2])
+    await db.calculation.bulkCreate([mockCalculation1, mockCalculation2, mockCalculation3])
     await db.funding.bulkCreate([mockFunding1, mockFunding2])
   })
 
@@ -52,12 +52,12 @@ describe('publish calculations', () => {
 
   test('should publish unpublished invoice number', async () => {
     await publish()
-    expect(mockSendMessage.mock.calls[0][0].body.invoiceNumber).toBe(mockCalculation1.invoiceNumber)
+    expect(mockSendMessage.mock.calls[0][0].body.invoiceNumber).toBe(mockCalculation3.invoiceNumber)
   })
 
   test('should publish unpublished calculation scheme', async () => {
     await publish()
-    expect(mockSendMessage.mock.calls[0][0].body.scheme).toBe(mockCalculation1.scheme)
+    expect(mockSendMessage.mock.calls[0][0].body.scheme).toBe(mockCalculation3.scheme)
   })
 
   test('should publish unpublished calculation date', async () => {

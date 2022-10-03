@@ -1,0 +1,13 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+  <changeSet author="Abidemi Adio" id="1">
+    <tagDatabase tag="v1.3.0" />
+  </changeSet>
+  <changeSet author="Abidemi Adio" id="2">
+    <dropForeignKeyConstraint  baseTableName="fundings" constraintName="fk_calculations_calculationId"/>
+    <dropPrimaryKey tableName="calculations" dropIndex="true" constraintName="calculationsId_pkey"/>
+    <addPrimaryKey tableName="calculations" columnNames="calculationId, scheme" constraintName="calculationsId_scheme_pkey"/>
+    <addForeignKeyConstraint baseColumnNames="calculationId, fundingCode" baseTableName="fundings" constraintName="fk_calculations_calculationId_scheme" referencedColumnNames="calculationId, scheme" referencedTableName="calculations" />
+  </changeSet>
+
+</databaseChangeLog>
