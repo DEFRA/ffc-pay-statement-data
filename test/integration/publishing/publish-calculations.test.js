@@ -111,7 +111,7 @@ describe('publish calculations', () => {
     expect(calculation.published).toStrictEqual(new Date(2022, 7, 5, 15, 30, 10, 120))
   })
 
-  test('should not publish same calculation on second run', async () => {
+  test('should not publish same organisation on second run if record has not been updated after previous run', async () => {
     await publish()
     await publish()
     expect(mockSendMessage).toHaveBeenCalledTimes(1)
@@ -121,5 +121,12 @@ describe('publish calculations', () => {
     await db.funding.create(mockFunding3)
     await publish()
     expect(mockSendMessage.mock.calls[0][0].body.fundings.length).toBe(2)
+  })
+
+  test('should re-publish if previously published dataset updated', async () => {
+    await publish()
+    await db.calculation.update({ updated: new Date(2022, 8, 5, 15, 30, 10, 121) }, { where: { calculationId: 1234567 } })
+    await publish()
+    expect(mockSendMessage).toHaveBeenCalledTimes(2)
   })
 })

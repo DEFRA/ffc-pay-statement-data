@@ -104,9 +104,16 @@ describe('publish organisations', () => {
     expect(organisation.published).toStrictEqual(new Date(2022, 7, 5, 15, 30, 10, 120))
   })
 
-  test('should not publish same organisation on second run', async () => {
+  test('should not publish same organisation on second run if record has not been updated after previous run', async () => {
     await publish()
     await publish()
     expect(mockSendMessage).toHaveBeenCalledTimes(1)
+  })
+
+  test('should re-publish if previously published dataset updated', async () => {
+    await publish()
+    await db.organisation.update({ updated: new Date(2022, 8, 5, 15, 30, 10, 121) }, { where: { sbi: 123456789 } })
+    await publish()
+    expect(mockSendMessage).toHaveBeenCalledTimes(2)
   })
 })
