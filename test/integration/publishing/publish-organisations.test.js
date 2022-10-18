@@ -104,7 +104,7 @@ describe('publish organisations', () => {
     expect(organisation.published).toStrictEqual(new Date(2022, 7, 5, 15, 30, 10, 120))
   })
 
-  test('should not publish same organisation on second run', async () => {
+  test('should not publish same organisation on second run if record has not been updated after previous run', async () => {
     await publish()
     await publish()
     expect(mockSendMessage).toHaveBeenCalledTimes(1)
