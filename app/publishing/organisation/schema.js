@@ -10,8 +10,8 @@ module.exports = Joi.object({
   addressLine3: Joi.string().optional(),
   city: Joi.string().optional(),
   county: Joi.string().optional(),
-  postcode: Joi.string().required(),
-  emailAddress: Joi.string().email().required(),
+  postcode: Joi.string().optional(),
+  emailAddress: Joi.string().optional(),
   updated: Joi.date().required(),
   type: Joi.string().required().allow(ORGANISATION)
 })

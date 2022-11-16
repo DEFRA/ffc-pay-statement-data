@@ -74,16 +74,22 @@ describe('validate update', () => {
     expect(result).toBeFalsy()
   })
 
-  test('returns false if missing organisation postcode', () => {
+  test('returns true if missing organisation postcode', () => {
     delete organisation.postcode
     const result = validateUpdate(organisation, ORGANISATION)
-    expect(result).toBeFalsy()
+    expect(result).toBeTruthy()
   })
 
-  test('returns false if missing organisation email address', () => {
+  test('returns true if missing organisation email address', () => {
     delete organisation.emailAddress
     const result = validateUpdate(organisation, ORGANISATION)
-    expect(result).toBeFalsy()
+    expect(result).toBeTruthy()
+  })
+
+  test('returns true if organisation email address not valid email', () => {
+    organisation.emailAddress = 'invalid'
+    const result = validateUpdate(organisation, ORGANISATION)
+    expect(result).toBeTruthy()
   })
 
   test('returns false if missing organisation type', () => {
