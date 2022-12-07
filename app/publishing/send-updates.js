@@ -22,8 +22,8 @@ const sendUpdates = async (type) => {
         totalPublished++
       }
     }
-    console.log('%i %s datasets published', totalPublished, type)
     await transaction.commit()
+    console.log('%i %s datasets published', totalPublished, type)
   } catch (err) {
     await transaction.rollback()
     throw err
