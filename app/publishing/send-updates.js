@@ -8,6 +8,7 @@ const sendUpdates = async (type) => {
   const getUnpublished = require(`./${type}/get-unpublished`)
   const updatePublished = require(`./${type}/update-published`)
   const transaction = await db.sequelize.transaction()
+  let totalPublished = 0
   try {
     const outstanding = await getUnpublished(transaction)
     for (const unpublished of outstanding) {
@@ -18,9 +19,11 @@ const sendUpdates = async (type) => {
         await sendMessage(sanitizedUpdate, type)
         const primaryKey = getPrimaryKeyValue(unpublished, type)
         await updatePublished(primaryKey, transaction)
+        totalPublished++
       }
     }
     await transaction.commit()
+    console.log('%i %s datasets published', totalPublished, type)
   } catch (err) {
     await transaction.rollback()
     throw err

@@ -116,4 +116,10 @@ describe('publish organisations', () => {
     await publish()
     expect(mockSendMessage).toHaveBeenCalledTimes(2)
   })
+
+  test('should call a console log with number of datasets published for organisations/customers', async () => {
+    const logSpy = jest.spyOn(global.console, 'log')
+    await publish()
+    expect(logSpy.mock.calls).toContainEqual(['%i %s datasets published', 1, 'organisation'])
+  })
 })
