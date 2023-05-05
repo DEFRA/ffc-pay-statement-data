@@ -11,6 +11,7 @@ jest.mock('ffc-messaging', () => {
   }
 })
 
+const { publishingConfig } = require('../../../app/config')
 const db = require('../../../app/data')
 
 const publish = require('../../../app/publishing')
@@ -120,6 +121,65 @@ describe('publish organisations', () => {
       await publish()
       await publish()
       expect(mockSendMessage).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('When organisation sommit publishingConfig', () => {
+    beforeEach(async () => {
+      publishingConfig.dataPublishingMaxBatchSize = 5
+      await db.sequelize.truncate({ cascade: true })
+    })
+
+    test('should process all records when there are less records than publishingConfig.dataPublishingMaxBatchSize', async () => {
+      const numberOfRecords = publishingConfig.dataPublishingMaxBatchSize - 1
+      await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
+      const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
+
+      await publish()
+
+      const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
+      expect(unpublishedBefore).toHaveLength(numberOfRecords)
+      expect(unpublishedAfter).toHaveLength(0)
+    })
+
+    test('should process all records when there are equal number of records than publishingConfig.dataPublishingMaxBatchSize', async () => {
+      const numberOfRecords = publishingConfig.dataPublishingMaxBatchSize
+      await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
+      const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
+
+      await publish()
+
+      const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
+      expect(unpublishedBefore).toHaveLength(numberOfRecords)
+      expect(unpublishedAfter).toHaveLength(0)
+    })
+
+    test('should process publishingConfig.dataPublishingMaxBatchSize records when there are more records than publishingConfig.dataPublishingMaxBatchSize', async () => {
+      const numberOfRecords = publishingConfig.dataPublishingMaxBatchSize + 1
+      await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
+      const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
+
+      await publish()
+
+      const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
+      expect(unpublishedBefore).toHaveLength(numberOfRecords)
+      expect(unpublishedAfter).toHaveLength(numberOfRecords - publishingConfig.dataPublishingMaxBatchSize)
+    })
+
+    test('should process all records after the second publish when there are more records than publishingConfig.dataPublishingMaxBatchSize', async () => {
+      const numberOfRecords = publishingConfig.dataPublishingMaxBatchSize + 1
+      await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
+      const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
+
+      await publish()
+      const unpublishedAfterFirstPublish = await db.organisation.findAll({ where: { published: null } })
+
+      await publish()
+      const unpublishedAfterSecondPublish = await db.organisation.findAll({ where: { published: null } })
+
+      expect(unpublishedBefore).toHaveLength(numberOfRecords)
+      expect(unpublishedAfterFirstPublish).toHaveLength(numberOfRecords - publishingConfig.dataPublishingMaxBatchSize)
+      expect(unpublishedAfterSecondPublish).toHaveLength(0)
     })
   })
 
