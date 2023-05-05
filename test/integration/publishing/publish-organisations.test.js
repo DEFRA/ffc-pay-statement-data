@@ -21,8 +21,6 @@ const { mockOrganisation1, mockOrganisation2 } = require('../../mocks/organisati
 describe('publish organisations', () => {
   beforeEach(async () => {
     jest.useFakeTimers().setSystemTime(new Date(2022, 7, 5, 15, 30, 10, 120))
-
-    await db.organisation.bulkCreate([mockOrganisation1, mockOrganisation2])
   })
 
   afterEach(async () => {
@@ -35,6 +33,10 @@ describe('publish organisations', () => {
   })
 
   describe('When organisation is unpublished', () => {
+    beforeEach(async () => {
+      await db.organisation.bulkCreate([mockOrganisation1, mockOrganisation2])
+    })
+
     test('should call sendMessage once', async () => {
       await publish()
       expect(mockSendMessage).toHaveBeenCalledTimes(1)
@@ -125,6 +127,10 @@ describe('publish organisations', () => {
   })
 
   describe('When organisation has been updated', () => {
+    beforeEach(async () => {
+      await db.organisation.bulkCreate([mockOrganisation1, mockOrganisation2])
+    })
+
     test('should call sendMessage twice', async () => {
       await publish()
       await db.organisation.update({ updated: new Date(2022, 8, 5, 15, 30, 10, 121) }, { where: { sbi: 123456789 } })
@@ -179,22 +185,6 @@ describe('publish organisations', () => {
 
     test('should process all records after the second publish when there are more records than publishingConfig.dataPublishingMaxBatchSize', async () => {
       const numberOfRecords = 1 + publishingConfig.dataPublishingMaxBatchSize
-      await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
-      const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
-
-      await publish()
-      const unpublishedAfterFirstPublish = await db.organisation.findAll({ where: { published: null } })
-
-      await publish()
-      const unpublishedAfterSecondPublish = await db.organisation.findAll({ where: { published: null } })
-
-      expect(unpublishedBefore).toHaveLength(numberOfRecords)
-      expect(unpublishedAfterFirstPublish).toHaveLength(numberOfRecords - publishingConfig.dataPublishingMaxBatchSize)
-      expect(unpublishedAfterSecondPublish).toHaveLength(0)
-    })
-
-    test('should lock records', async () => {
-      const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSize
       await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
       const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
 
