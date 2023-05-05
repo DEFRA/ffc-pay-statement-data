@@ -124,7 +124,18 @@ describe('publish organisations', () => {
     })
   })
 
-  describe('When organisation sommit publishingConfig', () => {
+  describe('When organisation has been updated', () => {
+    test('should call sendMessage twice', async () => {
+      await publish()
+      await db.organisation.update({ updated: new Date(2022, 8, 5, 15, 30, 10, 121) }, { where: { sbi: 123456789 } })
+
+      await publish()
+
+      expect(mockSendMessage).toHaveBeenCalledTimes(2)
+    })
+  })
+
+  describe('When multiple organisations are unpublished', () => {
     beforeEach(async () => {
       publishingConfig.dataPublishingMaxBatchSize = 5
       await db.sequelize.truncate({ cascade: true })
@@ -180,17 +191,6 @@ describe('publish organisations', () => {
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
       expect(unpublishedAfterFirstPublish).toHaveLength(numberOfRecords - publishingConfig.dataPublishingMaxBatchSize)
       expect(unpublishedAfterSecondPublish).toHaveLength(0)
-    })
-  })
-
-  describe('When organisation has been updated', () => {
-    test('should call sendMessage twice', async () => {
-      await publish()
-      await db.organisation.update({ updated: new Date(2022, 8, 5, 15, 30, 10, 121) }, { where: { sbi: 123456789 } })
-
-      await publish()
-
-      expect(mockSendMessage).toHaveBeenCalledTimes(2)
     })
   })
 })
