@@ -159,19 +159,24 @@ describe('send calculation and organisation updates', () => {
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.organisation')).toHaveLength(numberOfRecordsOrganisation)
     })
 
-    test('should process all calculation and organisation records', async () => {
-      const unpublishedBeforeCalculation = await db.calculation.findAll({ where: { published: null } })
-      const unpublishedBeforeOrganisation = await db.organisation.findAll({ where: { published: null } })
+    test('should process all calculation records', async () => {
+      const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
 
       await publish()
 
-      const unpublishedAfterCalculation = await db.calculation.findAll({ where: { published: null } })
-      const unpublishedAfterOrganisation = await db.organisation.findAll({ where: { published: null } })
+      const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
+      expect(unpublishedBefore).toHaveLength(numberOfRecordsCalculation)
+      expect(unpublishedAfter).toHaveLength(0)
+    })
 
-      expect(unpublishedBeforeCalculation).toHaveLength(numberOfRecordsCalculation)
-      expect(unpublishedBeforeOrganisation).toHaveLength(numberOfRecordsOrganisation)
-      expect(unpublishedAfterCalculation).toHaveLength(0)
-      expect(unpublishedAfterOrganisation).toHaveLength(0)
+    test('should process all organisation records', async () => {
+      const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
+
+      await publish()
+
+      const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
+      expect(unpublishedBefore).toHaveLength(numberOfRecordsOrganisation)
+      expect(unpublishedAfter).toHaveLength(0)
     })
   })
 
@@ -205,6 +210,26 @@ describe('send calculation and organisation updates', () => {
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.calculation')).toHaveLength(numberOfRecordsCalculation)
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.organisation')).toHaveLength(numberOfRecordsOrganisation)
     })
+
+    test('should process all calculation records', async () => {
+      const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
+
+      await publish()
+
+      const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
+      expect(unpublishedBefore).toHaveLength(numberOfRecordsCalculation)
+      expect(unpublishedAfter).toHaveLength(0)
+    })
+
+    test('should process all organisation records', async () => {
+      const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
+
+      await publish()
+
+      const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
+      expect(unpublishedBefore).toHaveLength(numberOfRecordsOrganisation)
+      expect(unpublishedAfter).toHaveLength(0)
+    })
   })
 
   describe('When there are less calculation records than publishingConfig.dataPublishingMaxBatchSize and less organisation records than publishingConfig.dataPublishingMaxBatchSize both totaling more than publishingConfig.dataPublishingMaxBatchSize', () => {
@@ -236,6 +261,26 @@ describe('send calculation and organisation updates', () => {
 
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.calculation')).toHaveLength(numberOfRecordsCalculation)
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.organisation')).toHaveLength(numberOfRecordsOrganisation)
+    })
+
+    test('should process all calculation records', async () => {
+      const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
+
+      await publish()
+
+      const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
+      expect(unpublishedBefore).toHaveLength(numberOfRecordsCalculation)
+      expect(unpublishedAfter).toHaveLength(0)
+    })
+
+    test('should process all organisation records', async () => {
+      const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
+
+      await publish()
+
+      const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
+      expect(unpublishedBefore).toHaveLength(numberOfRecordsOrganisation)
+      expect(unpublishedAfter).toHaveLength(0)
     })
   })
 
@@ -269,6 +314,26 @@ describe('send calculation and organisation updates', () => {
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.calculation')).toHaveLength(publishingConfig.dataPublishingMaxBatchSize)
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.organisation')).toHaveLength(numberOfRecordsOrganisation)
     })
+
+    test('should process publishingConfig.dataPublishingMaxBatchSize calculation records', async () => {
+      const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
+
+      await publish()
+
+      const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
+      expect(unpublishedBefore).toHaveLength(numberOfRecordsCalculation)
+      expect(unpublishedAfter).toHaveLength(numberOfRecordsCalculation - publishingConfig.dataPublishingMaxBatchSize)
+    })
+
+    test('should process all organisation records', async () => {
+      const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
+
+      await publish()
+
+      const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
+      expect(unpublishedBefore).toHaveLength(numberOfRecordsOrganisation)
+      expect(unpublishedAfter).toHaveLength(0)
+    })
   })
 
   describe('When there are less calculation records than publishingConfig.dataPublishingMaxBatchSize and more organisation records than publishingConfig.dataPublishingMaxBatchSize both totaling more than publishingConfig.dataPublishingMaxBatchSize', () => {
@@ -301,6 +366,26 @@ describe('send calculation and organisation updates', () => {
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.calculation')).toHaveLength(numberOfRecordsCalculation)
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.organisation')).toHaveLength(publishingConfig.dataPublishingMaxBatchSize)
     })
+
+    test('should process all calculation records', async () => {
+      const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
+
+      await publish()
+
+      const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
+      expect(unpublishedBefore).toHaveLength(numberOfRecordsCalculation)
+      expect(unpublishedAfter).toHaveLength(0)
+    })
+
+    test('should process all organisation records', async () => {
+      const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
+
+      await publish()
+
+      const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
+      expect(unpublishedBefore).toHaveLength(numberOfRecordsOrganisation)
+      expect(unpublishedAfter).toHaveLength(numberOfRecordsOrganisation - publishingConfig.dataPublishingMaxBatchSize)
+    })
   })
 
   describe('When there are more calculation records than publishingConfig.dataPublishingMaxBatchSize and more organisation records than publishingConfig.dataPublishingMaxBatchSize both totaling more than publishingConfig.dataPublishingMaxBatchSize', () => {
@@ -332,6 +417,26 @@ describe('send calculation and organisation updates', () => {
 
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.calculation')).toHaveLength(publishingConfig.dataPublishingMaxBatchSize)
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.organisation')).toHaveLength(publishingConfig.dataPublishingMaxBatchSize)
+    })
+
+    test('should process publishingConfig.dataPublishingMaxBatchSize calculation records', async () => {
+      const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
+
+      await publish()
+
+      const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
+      expect(unpublishedBefore).toHaveLength(numberOfRecordsCalculation)
+      expect(unpublishedAfter).toHaveLength(numberOfRecordsCalculation - publishingConfig.dataPublishingMaxBatchSize)
+    })
+
+    test('should process publishingConfig.dataPublishingMaxBatchSize organisation records', async () => {
+      const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
+
+      await publish()
+
+      const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
+      expect(unpublishedBefore).toHaveLength(numberOfRecordsOrganisation)
+      expect(unpublishedAfter).toHaveLength(numberOfRecordsOrganisation - publishingConfig.dataPublishingMaxBatchSize)
     })
   })
 })
