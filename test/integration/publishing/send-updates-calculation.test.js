@@ -19,7 +19,7 @@ const publish = require('../../../app/publishing')
 const { mockCalculation1, mockCalculation3 } = require('../../mocks/calculation')
 const { mockFunding1, mockFunding3 } = require('../../mocks/funding')
 
-describe('publish calculations', () => {
+describe('send calculation updates', () => {
   beforeEach(async () => {
     jest.useFakeTimers().setSystemTime(new Date(2022, 7, 5, 15, 30, 10, 120))
   })
