@@ -1,7 +1,7 @@
 const Joi = require('joi')
 
 const schema = Joi.object({
-  dataPublishingMaxBatchSize: Joi.number().default(500)
+  dataPublishingMaxBatchSize: Joi.number().default(250)
 })
 
 const config = {

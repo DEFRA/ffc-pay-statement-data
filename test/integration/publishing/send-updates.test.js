@@ -226,9 +226,16 @@ describe('send calculation and organisation updates', () => {
       await db.organisation.bulkCreate([...Array(numberOfRecordsOrganisation).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
     })
 
-    test('should call sendMessage publishingConfig.dataPublishingMaxBatchSize times', async () => {
+    test('should call sendMessage numberOfRecords times', async () => {
       await publish()
-      expect(mockSendMessage).toHaveBeenCalledTimes(publishingConfig.dataPublishingMaxBatchSize)
+      expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
+    })
+
+    test('should call sendMessage with numberOfRecordsCalculation calculation messages and numberOfRecordsOrganisation organisation messages', async () => {
+      await publish()
+
+      expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.calculation')).toHaveLength(numberOfRecordsCalculation)
+      expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.organisation')).toHaveLength(numberOfRecordsOrganisation)
     })
   })
 
@@ -251,9 +258,16 @@ describe('send calculation and organisation updates', () => {
       await db.organisation.bulkCreate([...Array(numberOfRecordsOrganisation).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
     })
 
-    test('should call sendMessage publishingConfig.dataPublishingMaxBatchSize times', async () => {
+    test('should call sendMessage publishingConfig.dataPublishingMaxBatchSize + numberOfRecordsOrganisation times', async () => {
       await publish()
-      expect(mockSendMessage).toHaveBeenCalledTimes(publishingConfig.dataPublishingMaxBatchSize)
+      expect(mockSendMessage).toHaveBeenCalledTimes(publishingConfig.dataPublishingMaxBatchSize + numberOfRecordsOrganisation)
+    })
+
+    test('should call sendMessage with publishingConfig.dataPublishingMaxBatchSize calculation messages and numberOfRecordsOrganisation organisation messages', async () => {
+      await publish()
+
+      expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.calculation')).toHaveLength(publishingConfig.dataPublishingMaxBatchSize)
+      expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.organisation')).toHaveLength(numberOfRecordsOrganisation)
     })
   })
 
@@ -276,9 +290,16 @@ describe('send calculation and organisation updates', () => {
       await db.organisation.bulkCreate([...Array(numberOfRecordsOrganisation).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
     })
 
-    test('should call sendMessage publishingConfig.dataPublishingMaxBatchSize times', async () => {
+    test('should call sendMessage numberOfRecordsCalculation + publishingConfig.dataPublishingMaxBatchSize times', async () => {
       await publish()
-      expect(mockSendMessage).toHaveBeenCalledTimes(publishingConfig.dataPublishingMaxBatchSize)
+      expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecordsCalculation + publishingConfig.dataPublishingMaxBatchSize)
+    })
+
+    test('should call sendMessage with numberOfRecordsCalculation calculation messages and publishingConfig.dataPublishingMaxBatchSize messages', async () => {
+      await publish()
+
+      expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.calculation')).toHaveLength(numberOfRecordsCalculation)
+      expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.organisation')).toHaveLength(publishingConfig.dataPublishingMaxBatchSize)
     })
   })
 
@@ -301,9 +322,16 @@ describe('send calculation and organisation updates', () => {
       await db.organisation.bulkCreate([...Array(numberOfRecordsOrganisation).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
     })
 
-    test('should call sendMessage publishingConfig.dataPublishingMaxBatchSize times', async () => {
+    test('should call sendMessage 2 * publishingConfig.dataPublishingMaxBatchSize times', async () => {
       await publish()
-      expect(mockSendMessage).toHaveBeenCalledTimes(publishingConfig.dataPublishingMaxBatchSize)
+      expect(mockSendMessage).toHaveBeenCalledTimes(2 * publishingConfig.dataPublishingMaxBatchSize)
+    })
+
+    test('should call sendMessage with publishingConfig.dataPublishingMaxBatchSize calculation messages and publishingConfig.dataPublishingMaxBatchSize messages', async () => {
+      await publish()
+
+      expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.calculation')).toHaveLength(publishingConfig.dataPublishingMaxBatchSize)
+      expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.organisation')).toHaveLength(publishingConfig.dataPublishingMaxBatchSize)
     })
   })
 })
