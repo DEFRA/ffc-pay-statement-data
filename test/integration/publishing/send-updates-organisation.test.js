@@ -42,62 +42,62 @@ describe('publish organisations', () => {
       expect(mockSendMessage).toHaveBeenCalledTimes(1)
     })
 
-    test('should publish unpublished organisation sbi', async () => {
+    test('should publish organisation sbi', async () => {
       await publish()
       expect(mockSendMessage.mock.calls[0][0].body.sbi).toBe(mockOrganisation1.sbi)
     })
 
-    test('should publish unpublished organisation frn', async () => {
+    test('should publish organisation frn', async () => {
       await publish()
       expect(mockSendMessage.mock.calls[0][0].body.frn).toBe(mockOrganisation1.frn.toString())
     })
 
-    test('should publish unpublished organisation name', async () => {
+    test('should publish organisation name', async () => {
       await publish()
       expect(mockSendMessage.mock.calls[0][0].body.name).toBe(mockOrganisation1.name)
     })
 
-    test('should publish unpublished organisation email address', async () => {
+    test('should publish organisation email address', async () => {
       await publish()
       expect(mockSendMessage.mock.calls[0][0].body.emailAddress).toBe(mockOrganisation1.emailAddress)
     })
 
-    test('should publish unpublished organisation address line 1', async () => {
+    test('should publish organisation address line 1', async () => {
       await publish()
       expect(mockSendMessage.mock.calls[0][0].body.addressLine1).toBe(mockOrganisation1.addressLine1)
     })
 
-    test('should publish unpublished organisation address line 2', async () => {
+    test('should publish organisation address line 2', async () => {
       await publish()
       expect(mockSendMessage.mock.calls[0][0].body.addressLine2).toBe(mockOrganisation1.addressLine2)
     })
 
-    test('should publish unpublished organisation address line 3', async () => {
+    test('should publish organisation address line 3', async () => {
       await publish()
       expect(mockSendMessage.mock.calls[0][0].body.addressLine3).toBe(mockOrganisation1.addressLine3)
     })
 
-    test('should publish unpublished organisation city', async () => {
+    test('should publish organisation city', async () => {
       await publish()
       expect(mockSendMessage.mock.calls[0][0].body.city).toBe(mockOrganisation1.city)
     })
 
-    test('should publish unpublished organisation county', async () => {
+    test('should publish organisation county', async () => {
       await publish()
       expect(mockSendMessage.mock.calls[0][0].body.county).toBe(mockOrganisation1.county)
     })
 
-    test('should publish unpublished organisation postcode', async () => {
+    test('should publish organisation postcode', async () => {
       await publish()
       expect(mockSendMessage.mock.calls[0][0].body.postcode).toBe(mockOrganisation1.postcode)
     })
 
-    test('should publish unpublished organisation updated date', async () => {
+    test('should publish organisation updated date', async () => {
       await publish()
       expect(mockSendMessage.mock.calls[0][0].body.updated).toBe(mockOrganisation1.updated.toISOString())
     })
 
-    test('should publish unpublished type', async () => {
+    test('should publish type', async () => {
       await publish()
       expect(mockSendMessage.mock.calls[0][0].body.type).toBe('organisation')
     })
@@ -113,13 +113,13 @@ describe('publish organisations', () => {
       expect(organisation.published).toStrictEqual(new Date(2022, 7, 5, 15, 30, 10, 120))
     })
 
-    test('should call a console log with number of datasets published for organisations/customers', async () => {
+    test('should call a console log with number of datasets published for organisations', async () => {
       const logSpy = jest.spyOn(global.console, 'log')
       await publish()
       expect(logSpy.mock.calls).toContainEqual(['%i %s datasets published', 1, 'organisation'])
     })
 
-    test('should not publish same organisation on second run if record has not been updated after previous run', async () => {
+    test('should not publish same organisation on second run if record has not been updated', async () => {
       await publish()
       await publish()
       expect(mockSendMessage).toHaveBeenCalledTimes(1)
