@@ -1,5 +1,5 @@
 const getUnpublishedCalculations = require('./get-unpublished-calculations')
-const getFundingsForCalculation = require('./get-fundings-for-calculation')
+const getFundingsByCalculationId = require('./get-fundings-by-calculation-id')
 
 const getUnpublished = async (transaction) => {
   const calculations = await getUnpublishedCalculations(transaction)
@@ -7,7 +7,7 @@ const getUnpublished = async (transaction) => {
   const unpublished = []
 
   for (const calculation of calculations) {
-    const fundings = await getFundingsForCalculation(calculation.calculationId, transaction)
+    const fundings = await getFundingsByCalculationId(calculation.calculationId, transaction)
     unpublished.push({
       ...calculation,
       fundings

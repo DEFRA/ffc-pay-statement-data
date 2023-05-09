@@ -1,6 +1,6 @@
 const db = require('../../data')
 
-const getFundingsForCalculation = async (calculationId, transaction) => {
+const getFundingsByCalculationId = async (calculationId, transaction) => {
   const fundings = await db.funding.findAll({
     where: {
       calculationId
@@ -13,4 +13,4 @@ const getFundingsForCalculation = async (calculationId, transaction) => {
   return fundings
 }
 
-module.exports = getFundingsForCalculation
+module.exports = getFundingsByCalculationId
