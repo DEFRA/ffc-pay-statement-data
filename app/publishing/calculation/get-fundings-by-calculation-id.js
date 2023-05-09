@@ -1,7 +1,7 @@
 const db = require('../../data')
 
 const getFundingsByCalculationId = async (calculationId, transaction) => {
-  const fundings = await db.funding.findAll({
+  return db.funding.findAll({
     where: {
       calculationId
     },
@@ -9,8 +9,6 @@ const getFundingsByCalculationId = async (calculationId, transaction) => {
     raw: true,
     transaction
   })
-
-  return fundings
 }
 
 module.exports = getFundingsByCalculationId
