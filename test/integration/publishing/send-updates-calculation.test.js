@@ -164,12 +164,12 @@ describe('send calculation updates', () => {
 
   describe('When multiple calculations are unpublished', () => {
     beforeEach(async () => {
-      publishingConfig.dataPublishingMaxBatchSize = 5
+      publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
       await db.sequelize.truncate({ cascade: true })
     })
 
-    test('should process all records when there are less records than publishingConfig.dataPublishingMaxBatchSize', async () => {
-      const numberOfRecords = -1 + publishingConfig.dataPublishingMaxBatchSize
+    test('should process all records when there are less records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+      const numberOfRecords = -1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
@@ -181,8 +181,8 @@ describe('send calculation updates', () => {
       expect(unpublishedAfter).toHaveLength(0)
     })
 
-    test('should publish all records when there are less records than publishingConfig.dataPublishingMaxBatchSize', async () => {
-      const numberOfRecords = -1 + publishingConfig.dataPublishingMaxBatchSize
+    test('should publish all records when there are less records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+      const numberOfRecords = -1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
 
@@ -191,8 +191,8 @@ describe('send calculation updates', () => {
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
     })
 
-    test('should process all records when there are equal number of records than publishingConfig.dataPublishingMaxBatchSize', async () => {
-      const numberOfRecords = publishingConfig.dataPublishingMaxBatchSize
+    test('should process all records when there are equal number of records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+      const numberOfRecords = publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
@@ -204,8 +204,8 @@ describe('send calculation updates', () => {
       expect(unpublishedAfter).toHaveLength(0)
     })
 
-    test('should publish all records when there are equal number of records than publishingConfig.dataPublishingMaxBatchSize', async () => {
-      const numberOfRecords = publishingConfig.dataPublishingMaxBatchSize
+    test('should publish all records when there are equal number of records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+      const numberOfRecords = publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
 
@@ -214,8 +214,8 @@ describe('send calculation updates', () => {
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
     })
 
-    test('should process publishingConfig.dataPublishingMaxBatchSize records when there are more records than publishingConfig.dataPublishingMaxBatchSize', async () => {
-      const numberOfRecords = 1 + publishingConfig.dataPublishingMaxBatchSize
+    test('should process publishingConfig.dataPublishingMaxBatchSizePerDataSource records when there are more records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+      const numberOfRecords = 1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
@@ -224,21 +224,21 @@ describe('send calculation updates', () => {
 
       const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
-      expect(unpublishedAfter).toHaveLength(numberOfRecords - publishingConfig.dataPublishingMaxBatchSize)
+      expect(unpublishedAfter).toHaveLength(numberOfRecords - publishingConfig.dataPublishingMaxBatchSizePerDataSource)
     })
 
-    test('should publish publishingConfig.dataPublishingMaxBatchSize records when there are equal number of records than publishingConfig.dataPublishingMaxBatchSize', async () => {
-      const numberOfRecords = 1 + publishingConfig.dataPublishingMaxBatchSize
+    test('should publish publishingConfig.dataPublishingMaxBatchSizePerDataSource records when there are equal number of records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+      const numberOfRecords = 1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
 
       await publish()
 
-      expect(mockSendMessage).toHaveBeenCalledTimes(publishingConfig.dataPublishingMaxBatchSize)
+      expect(mockSendMessage).toHaveBeenCalledTimes(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
     })
 
-    test('should process all records after the second publish when there are more records than publishingConfig.dataPublishingMaxBatchSize', async () => {
-      const numberOfRecords = 1 + publishingConfig.dataPublishingMaxBatchSize
+    test('should process all records after the second publish when there are more records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+      const numberOfRecords = 1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
@@ -250,12 +250,12 @@ describe('send calculation updates', () => {
       const unpublishedAfterSecondPublish = await db.calculation.findAll({ where: { published: null } })
 
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
-      expect(unpublishedAfterFirstPublish).toHaveLength(numberOfRecords - publishingConfig.dataPublishingMaxBatchSize)
+      expect(unpublishedAfterFirstPublish).toHaveLength(numberOfRecords - publishingConfig.dataPublishingMaxBatchSizePerDataSource)
       expect(unpublishedAfterSecondPublish).toHaveLength(0)
     })
 
-    test('should publish all records after the second publish when there are less records than publishingConfig.dataPublishingMaxBatchSize', async () => {
-      const numberOfRecords = 1 + publishingConfig.dataPublishingMaxBatchSize
+    test('should publish all records after the second publish when there are less records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+      const numberOfRecords = 1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
 
@@ -268,13 +268,13 @@ describe('send calculation updates', () => {
 
   describe('When multiple fundings are attached to unpublished calculations', () => {
     beforeEach(async () => {
-      publishingConfig.dataPublishingMaxBatchSize = 5
+      publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
       await db.sequelize.truncate({ cascade: true })
     })
 
-    test('should process calculation record when there are less funding records than publishingConfig.dataPublishingMaxBatchSize', async () => {
+    test('should process calculation record when there are less funding records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecordsCalculation = 1
-      const numberOfRecordsFunding = -1 + publishingConfig.dataPublishingMaxBatchSize
+      const numberOfRecordsFunding = -1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.create(mockCalculation1)
       await db.funding.bulkCreate([...Array(numberOfRecordsFunding).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId } }))
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
@@ -286,9 +286,9 @@ describe('send calculation updates', () => {
       expect(unpublishedAfter).toHaveLength(0)
     })
 
-    test('should publish calculation record when there are less funding records than publishingConfig.dataPublishingMaxBatchSize', async () => {
+    test('should publish calculation record when there are less funding records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecordsCalculation = 1
-      const numberOfRecordsFunding = -1 + publishingConfig.dataPublishingMaxBatchSize
+      const numberOfRecordsFunding = -1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.create(mockCalculation1)
       await db.funding.bulkCreate([...Array(numberOfRecordsFunding).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId } }))
 
@@ -298,8 +298,8 @@ describe('send calculation updates', () => {
       expect(mockSendMessage).not.toHaveBeenCalledTimes(numberOfRecordsFunding)
     })
 
-    test('should publish all funding records when there are less funding records than publishingConfig.dataPublishingMaxBatchSize', async () => {
-      const numberOfRecordsFunding = -1 + publishingConfig.dataPublishingMaxBatchSize
+    test('should publish all funding records when there are less funding records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+      const numberOfRecordsFunding = -1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.create(mockCalculation1)
       await db.funding.bulkCreate([...Array(numberOfRecordsFunding).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId } }))
 
@@ -308,9 +308,9 @@ describe('send calculation updates', () => {
       expect(mockSendMessage.mock.calls[0][0].body.fundings).toHaveLength(numberOfRecordsFunding)
     })
 
-    test('should process calculation record when there are equal number of funding records than publishingConfig.dataPublishingMaxBatchSize', async () => {
+    test('should process calculation record when there are equal number of funding records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecordsCalculation = 1
-      const numberOfRecordsFunding = publishingConfig.dataPublishingMaxBatchSize
+      const numberOfRecordsFunding = publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.create(mockCalculation1)
       await db.funding.bulkCreate([...Array(numberOfRecordsFunding).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId } }))
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
@@ -322,9 +322,9 @@ describe('send calculation updates', () => {
       expect(unpublishedAfter).toHaveLength(0)
     })
 
-    test('should publish calculation record when there are equal number of funding records than publishingConfig.dataPublishingMaxBatchSize', async () => {
+    test('should publish calculation record when there are equal number of funding records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecordsCalculation = 1
-      const numberOfRecordsFunding = publishingConfig.dataPublishingMaxBatchSize
+      const numberOfRecordsFunding = publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.create(mockCalculation1)
       await db.funding.bulkCreate([...Array(numberOfRecordsFunding).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId } }))
 
@@ -334,8 +334,8 @@ describe('send calculation updates', () => {
       expect(mockSendMessage).not.toHaveBeenCalledTimes(numberOfRecordsFunding)
     })
 
-    test('should publish all funding records when there are equal number of funding records than publishingConfig.dataPublishingMaxBatchSize', async () => {
-      const numberOfRecordsFunding = publishingConfig.dataPublishingMaxBatchSize
+    test('should publish all funding records when there are equal number of funding records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+      const numberOfRecordsFunding = publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.create(mockCalculation1)
       await db.funding.bulkCreate([...Array(numberOfRecordsFunding).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId } }))
 
@@ -344,9 +344,9 @@ describe('send calculation updates', () => {
       expect(mockSendMessage.mock.calls[0][0].body.fundings).toHaveLength(numberOfRecordsFunding)
     })
 
-    test('should process calculation record when there are more funding records than publishingConfig.dataPublishingMaxBatchSize', async () => {
+    test('should process calculation record when there are more funding records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecordsCalculation = 1
-      const numberOfRecordsFunding = 1 + publishingConfig.dataPublishingMaxBatchSize
+      const numberOfRecordsFunding = 1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.create(mockCalculation1)
       await db.funding.bulkCreate([...Array(numberOfRecordsFunding).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId } }))
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
@@ -358,9 +358,9 @@ describe('send calculation updates', () => {
       expect(unpublishedAfter).toHaveLength(0)
     })
 
-    test('should publish calculation record when there are more funding records than publishingConfig.dataPublishingMaxBatchSize', async () => {
+    test('should publish calculation record when there are more funding records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecordsCalculation = 1
-      const numberOfRecordsFunding = 1 + publishingConfig.dataPublishingMaxBatchSize
+      const numberOfRecordsFunding = 1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.create(mockCalculation1)
       await db.funding.bulkCreate([...Array(numberOfRecordsFunding).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId } }))
 
@@ -370,15 +370,15 @@ describe('send calculation updates', () => {
       expect(mockSendMessage).not.toHaveBeenCalledTimes(numberOfRecordsFunding)
     })
 
-    test('should publish all funding records when there are more funding records than publishingConfig.dataPublishingMaxBatchSize', async () => {
-      const numberOfRecordsFunding = 1 + publishingConfig.dataPublishingMaxBatchSize
+    test('should publish all funding records when there are more funding records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+      const numberOfRecordsFunding = 1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.create(mockCalculation1)
       await db.funding.bulkCreate([...Array(numberOfRecordsFunding).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId } }))
 
       await publish()
 
       expect(mockSendMessage.mock.calls[0][0].body.fundings).toHaveLength(numberOfRecordsFunding)
-      expect(mockSendMessage.mock.calls[0][0].body.fundings).not.toHaveLength(publishingConfig.dataPublishingMaxBatchSize)
+      expect(mockSendMessage.mock.calls[0][0].body.fundings).not.toHaveLength(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
     })
   })
 })

@@ -6,7 +6,7 @@ const getUnpublishedCalculations = async (transaction) => {
   return db.calculation.findAll({
     lock: true,
     skipLocked: true,
-    limit: publishingConfig.dataPublishingMaxBatchSize,
+    limit: publishingConfig.dataPublishingMaxBatchSizePerDataSource,
     where: {
       [db.Sequelize.Op.or]: [
         {
