@@ -381,4 +381,67 @@ describe('send calculation updates', () => {
       expect(mockSendMessage.mock.calls[0][0].body.fundings).not.toHaveLength(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
     })
   })
+
+  describe('When concurrent processes', () => {
+    beforeEach(async () => {
+      jest.useRealTimers()
+      publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
+      await db.sequelize.truncate({ cascade: true })
+    })
+
+    test('should process all calculation records when there are double the number of records as publishingConfig.dataPublishingMaxBatchSizePerDataSource and 2 concurrent processes ', async () => {
+      const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
+      await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
+      await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
+      const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
+
+      publish()
+      publish()
+
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
+      expect(unpublishedBefore).toHaveLength(numberOfRecords)
+      expect(unpublishedAfter).toHaveLength(0)
+    })
+
+    test('should publish all records after the second publish when there are less records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+      const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
+      await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
+      await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
+
+      publish()
+      publish()
+
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
+    })
+
+    test('should not process all calculation records when there are triple the number of records as publishingConfig.dataPublishingMaxBatchSizePerDataSource and 2 concurrent processes ', async () => {
+      const numberOfRecords = 3 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
+      await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
+      await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
+      const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
+
+      publish()
+      publish()
+
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
+      expect(unpublishedBefore).toHaveLength(numberOfRecords)
+      expect(unpublishedAfter).toHaveLength(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
+    })
+
+    test('should not publish all records after the second publish when there are less records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+      const numberOfRecords = 3 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
+      await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
+      await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
+
+      publish()
+      publish()
+
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      expect(mockSendMessage).toHaveBeenCalledTimes(2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource)
+      expect(mockSendMessage).not.toHaveBeenCalledTimes(numberOfRecords)
+    })
+  })
 })
