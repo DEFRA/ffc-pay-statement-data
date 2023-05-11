@@ -443,12 +443,22 @@ describe('send calculation and organisation updates', () => {
   describe('When there are 2 concurrent processes', () => {
     beforeEach(async () => {
       jest.useRealTimers()
-      publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
-      await db.sequelize.truncate({ cascade: true })
+
+      numberOfRecordsCalculation = 1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
+      numberOfRecordsOrganisation = 1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
+      numberOfRecords = numberOfRecordsCalculation + numberOfRecordsOrganisation
+
+      expect(numberOfRecordsCalculation).toBeGreaterThan(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
+      expect(numberOfRecordsOrganisation).toBeGreaterThan(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
+      expect(numberOfRecords).toBeGreaterThan(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
+
+      await db.calculation.bulkCreate([...Array(numberOfRecordsCalculation).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
+      await db.funding.bulkCreate([...Array(numberOfRecordsCalculation).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
+      await db.organisation.bulkCreate([...Array(numberOfRecordsOrganisation).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
     })
 
     test('should process all calculation records when there are 2 times the number of calculation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
+      const numberOfRecords = publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })

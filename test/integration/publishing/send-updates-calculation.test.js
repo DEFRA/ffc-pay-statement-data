@@ -22,6 +22,7 @@ const { mockFunding1, mockFunding3 } = require('../../mocks/funding')
 describe('send calculation updates', () => {
   beforeEach(async () => {
     jest.useFakeTimers().setSystemTime(new Date(2022, 7, 5, 15, 30, 10, 120))
+    publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
   })
 
   afterEach(async () => {
@@ -163,11 +164,6 @@ describe('send calculation updates', () => {
   })
 
   describe('When multiple calculations are unpublished', () => {
-    beforeEach(async () => {
-      publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
-      await db.sequelize.truncate({ cascade: true })
-    })
-
     test('should process all records when there are less records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecords = -1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
@@ -267,11 +263,6 @@ describe('send calculation updates', () => {
   })
 
   describe('When multiple fundings are attached to unpublished calculations', () => {
-    beforeEach(async () => {
-      publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
-      await db.sequelize.truncate({ cascade: true })
-    })
-
     test('should process calculation record when there are less funding records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecordsCalculation = 1
       const numberOfRecordsFunding = -1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
@@ -385,8 +376,6 @@ describe('send calculation updates', () => {
   describe('When there are 2 concurrent processes', () => {
     beforeEach(async () => {
       jest.useRealTimers()
-      publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
-      await db.sequelize.truncate({ cascade: true })
     })
 
     test('should process all calculation records when there are 2 times the number of calculation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {

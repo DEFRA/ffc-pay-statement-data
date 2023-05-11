@@ -21,6 +21,7 @@ const { mockOrganisation1, mockOrganisation2 } = require('../../mocks/organisati
 describe('send organisation updates', () => {
   beforeEach(async () => {
     jest.useFakeTimers().setSystemTime(new Date(2022, 7, 5, 15, 30, 10, 120))
+    publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
   })
 
   afterEach(async () => {
@@ -142,11 +143,6 @@ describe('send organisation updates', () => {
   })
 
   describe('When multiple organisations are unpublished', () => {
-    beforeEach(async () => {
-      publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
-      await db.sequelize.truncate({ cascade: true })
-    })
-
     test('should process all records when there are less records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecords = -1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
@@ -203,8 +199,6 @@ describe('send organisation updates', () => {
   describe('When there are 2 concurrent processes', () => {
     beforeEach(async () => {
       jest.useRealTimers()
-      publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
-      await db.sequelize.truncate({ cascade: true })
     })
 
     test('should process all organisation records when there are 2 times the number of organisation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
