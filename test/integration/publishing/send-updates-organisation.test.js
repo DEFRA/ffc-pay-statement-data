@@ -200,7 +200,7 @@ describe('send organisation updates', () => {
     })
   })
 
-  describe('When 2 concurrent processes', () => {
+  describe('When there are 2 concurrent processes', () => {
     beforeEach(async () => {
       jest.useRealTimers()
       publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
