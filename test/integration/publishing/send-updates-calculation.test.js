@@ -382,14 +382,14 @@ describe('send calculation updates', () => {
     })
   })
 
-  describe('When concurrent processes', () => {
+  describe('When 2 concurrent processes', () => {
     beforeEach(async () => {
       jest.useRealTimers()
       publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
       await db.sequelize.truncate({ cascade: true })
     })
 
-    test('should process all calculation records when there are double the number of records as publishingConfig.dataPublishingMaxBatchSizePerDataSource and 2 concurrent processes ', async () => {
+    test('should process all calculation records when there are 2 times the number of calculation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
@@ -404,7 +404,7 @@ describe('send calculation updates', () => {
       expect(unpublishedAfter).toHaveLength(0)
     })
 
-    test('should publish all records after the second publish when there are less records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+    test('should publish all calculation records when there are 2 times the number of calculation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
@@ -416,7 +416,7 @@ describe('send calculation updates', () => {
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
     })
 
-    test('should not process all calculation records when there are triple the number of records as publishingConfig.dataPublishingMaxBatchSizePerDataSource and 2 concurrent processes ', async () => {
+    test('should not process all calculation records when there are 3 times the number of calculation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecords = 3 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
@@ -431,7 +431,7 @@ describe('send calculation updates', () => {
       expect(unpublishedAfter).toHaveLength(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
     })
 
-    test('should not publish all records after the second publish when there are less records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+    test('should not publish all calculation records when there are 3 times the number of calculation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecords = 3 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
