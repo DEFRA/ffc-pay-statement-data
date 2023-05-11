@@ -441,15 +441,19 @@ describe('send calculation and organisation updates', () => {
   })
 
   describe('When there are 2 concurrent processes', () => {
+    let numberOfRecordsCalculation
+    let numberOfRecordsOrganisation
+    let numberOfRecords
+
     beforeEach(async () => {
       jest.useRealTimers()
 
-      numberOfRecordsCalculation = 1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      numberOfRecordsOrganisation = 1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
+      numberOfRecordsCalculation = publishingConfig.dataPublishingMaxBatchSizePerDataSource
+      numberOfRecordsOrganisation = publishingConfig.dataPublishingMaxBatchSizePerDataSource
       numberOfRecords = numberOfRecordsCalculation + numberOfRecordsOrganisation
 
-      expect(numberOfRecordsCalculation).toBeGreaterThan(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
-      expect(numberOfRecordsOrganisation).toBeGreaterThan(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
+      expect(numberOfRecordsCalculation).toEqual(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
+      expect(numberOfRecordsOrganisation).toEqual(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
       expect(numberOfRecords).toBeGreaterThan(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
 
       await db.calculation.bulkCreate([...Array(numberOfRecordsCalculation).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
@@ -457,59 +461,20 @@ describe('send calculation and organisation updates', () => {
       await db.organisation.bulkCreate([...Array(numberOfRecordsOrganisation).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
     })
 
-    test('should process all calculation records when there are 2 times the number of calculation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
-      await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
-      const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
+    test('should process all calculation and organisation records when there are equal number of each records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+      const unpublishedCalculationsBefore = await db.calculation.findAll({ where: { published: null } })
+      const unpublishedOrganisationsBefore = await db.organisation.findAll({ where: { published: null } })
 
       publish()
       publish()
 
       await new Promise(resolve => setTimeout(resolve, 1000))
-      const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
-      expect(unpublishedBefore).toHaveLength(numberOfRecords)
-      expect(unpublishedAfter).toHaveLength(0)
-    })
-
-    test('should publish all calculation records when there are 2 times the number of calculation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
-      await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
-
-      publish()
-      publish()
-
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
-    })
-
-    test('should not process all calculation records when there are 3 times the number of calculation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 3 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
-      await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
-      const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
-
-      publish()
-      publish()
-
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
-      expect(unpublishedBefore).toHaveLength(numberOfRecords)
-      expect(unpublishedAfter).toHaveLength(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
-    })
-
-    test('should not publish all calculation records when there are 3 times the number of calculation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 3 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
-      await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
-
-      publish()
-      publish()
-
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      expect(mockSendMessage).toHaveBeenCalledTimes(2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource)
-      expect(mockSendMessage).not.toHaveBeenCalledTimes(numberOfRecords)
+      const unpublishedCalculationsAfter = await db.calculation.findAll({ where: { published: null } })
+      const unpublishedOrganisationsAfter = await db.organisation.findAll({ where: { published: null } })
+      expect(unpublishedCalculationsBefore).toHaveLength(numberOfRecordsCalculation)
+      expect(unpublishedOrganisationsBefore).toHaveLength(numberOfRecordsOrganisation)
+      expect(unpublishedCalculationsAfter).toHaveLength(0)
+      expect(unpublishedOrganisationsAfter).toHaveLength(0)
     })
   })
 })
