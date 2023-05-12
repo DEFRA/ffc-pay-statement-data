@@ -2,8 +2,8 @@ const db = require('../../data')
 
 const { publishingConfig } = require('../../config')
 
-const getUnpublished = async (transaction) => {
-  return db.organisation.findAll({
+const getUnpublishedCalculations = async (transaction) => {
+  return db.calculation.findAll({
     lock: true,
     skipLocked: true,
     limit: publishingConfig.dataPublishingMaxBatchSizePerDataSource,
@@ -17,10 +17,10 @@ const getUnpublished = async (transaction) => {
         }
       ]
     },
-    attributes: ['sbi', 'addressLine1', 'addressLine2', 'addressLine3', 'city', 'county', 'postcode', 'emailAddress', 'frn', 'name', 'updated'],
+    attributes: ['calculationId', ['calculationId', 'calculationReference'], 'sbi', 'frn', 'calculationDate', 'invoiceNumber', 'scheme', 'updated'],
     raw: true,
     transaction
   })
 }
 
-module.exports = getUnpublished
+module.exports = getUnpublishedCalculations

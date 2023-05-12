@@ -1,20 +1,20 @@
-const db = require('../../data')
+const getUnpublishedCalculations = require('./get-unpublished-calculations')
+const getFundingsByCalculationId = require('./get-fundings-by-calculation-id')
 
 const getUnpublished = async (transaction) => {
-  const calculations = await db.calculation.findAll({
-    where: {
-      [db.Sequelize.Op.or]: [{
-        published: null
-      }, {
-        published: { [db.Sequelize.Op.lt]: db.sequelize.col('updated') }
-      }]
-    },
-    include: [{ model: db.funding, as: 'fundings', attributes: ['calculationId', 'fundingCode', 'areaClaimed', 'rate'] }],
-    attributes: ['calculationId', ['calculationId', 'calculationReference'], 'sbi', 'frn', 'calculationDate', 'invoiceNumber', 'scheme', 'updated'],
-    nest: true,
-    transaction
-  })
-  return calculations.map(x => x.get({ plain: true }))
+  const calculations = await getUnpublishedCalculations(transaction)
+
+  const unpublished = []
+
+  for (const calculation of calculations) {
+    const fundings = await getFundingsByCalculationId(calculation.calculationId, transaction)
+    unpublished.push({
+      ...calculation,
+      fundings
+    })
+  }
+
+  return unpublished
 }
 
 module.exports = getUnpublished
