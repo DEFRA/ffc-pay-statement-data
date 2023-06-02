@@ -18,7 +18,8 @@ containerSecret:
   type: Opaque
 
 deployment:
-  replicas: 1
+  minReplicas: 1
+  maxReplicas: 4
   minReadySeconds: 0
 
 container:
