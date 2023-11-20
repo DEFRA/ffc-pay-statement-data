@@ -1,6 +1,6 @@
 {
   "name": "ffc-pay-statement-data",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "FFC Statement data integration service",
   "homepage": "https://github.com/DEFRA/ffc-pay-statement-data",
   "main": "app/index.js",
@@ -15,7 +15,8 @@
   },
   "author": "Defra",
   "contributors": [
-    "Marc Templeton m.templeton@kainos.com"
+    "Marc Templeton m.templeton@kainos.com",
+    "Leigh Godson leigh.godson.external@atos.net"
   ],
   "license": "OGL-UK-3.0",
   "dependencies": {
