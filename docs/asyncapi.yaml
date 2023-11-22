@@ -1,7 +1,7 @@
-asyncapi: 2.4.0
+asyncapi: 2.5.0
 info:
   title: FFC Payment Statement Data
-  version: '1.0.0'
+  version: '1.0.1'
   description: Publish datasets from Data Warehouse for Payment Statements
 channels:
   organisation:
@@ -29,6 +29,8 @@ components:
       type: object
       properties:
         name:
+          $ref: '#/components/schemas/BusinessName'
+        businessName:
           $ref: '#/components/schemas/BusinessName'
         sbi:
           $ref: '#/components/schemas/SBI'
@@ -65,6 +67,8 @@ components:
           $ref: '#/components/schemas/CalculationDate'
         invoiceNumber:
           $ref: '#/components/schemas/InvoiceNumber'
+        invoiceNumberSitiAgri:
+          $ref: '#/components/schemas/InvoiceNumberSitiAgri'
         scheme:
           $ref: '#/components/schemas/Scheme'
         updated:
@@ -137,6 +141,11 @@ components:
       type: string
       description: Invoice number of payment request
       example: S0000001C000001V001
+    InvoiceNumberSitiAgri:
+      type: string
+      pattern: ^SFI0[0-9]{7}$
+      description: Unique identifier for payment request in Siti Agri format
+      example: SFI012345678
     Scheme:
       type: string
       description: The scheme of the calculation belongs to
